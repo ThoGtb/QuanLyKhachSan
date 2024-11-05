@@ -27,7 +27,7 @@ namespace BUS
 
         public void Xem(DataGridView data)
         {
-            var dv= DAO_DanhSachDichVu.Instance.Xem().Select(t =>
+            var dv = DAO_DanhSachDichVu.Instance.Xem().Select(t =>
             {
                 return new
                 {
@@ -43,8 +43,8 @@ namespace BUS
         {
             DAO_DanhSachDichVu.Instance.LoadComBoBoxDatPhong(cb);
         }
-        public void LoadDichVu(ComboBox cb) 
-        { 
+        public void LoadDichVu(ComboBox cb)
+        {
             DAO_DanhSachDichVu.Instance.LoadComBoBoxDichVu(cb);
         }
         public void LoadDGVLenForm(TextBox ma, ComboBox maDV, ComboBox maDP, TextBox soLuong, DataGridView data)
@@ -59,7 +59,7 @@ namespace BUS
                 MaDichVu = maDichVu.SelectedValue.ToString(),
                 MaDatPhong = maDatPhong.Text,
                 SoLuong = int.Parse(soLuong.Text)
-               
+
             };
             DAO_DanhSachDichVu.Instance.Them(sd);
         }

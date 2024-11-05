@@ -29,16 +29,16 @@ namespace DAO
             using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
             {
                 var khachHang = (from kh in db.KhachHangs
-                              select new
-                              {
-                                  kh.MaKhachHang,
-                                  kh.MaDichVu,
-                                  kh.TenKhachHang,
-                                  kh.CCCD,
-                                  kh.Email,
-                                  kh.SDT,
-                                  kh.DiaChi,
-                              }).ToList();
+                                 select new
+                                 {
+                                     kh.MaKhachHang,
+                                     kh.MaDichVu,
+                                     kh.TenKhachHang,
+                                     kh.CCCD,
+                                     kh.Email,
+                                     kh.SDT,
+                                     kh.DiaChi,
+                                 }).ToList();
 
                 foreach (var item in khachHang)
                 {
@@ -48,9 +48,9 @@ namespace DAO
                     dvu.TenKhachHang = item.TenKhachHang;
                     dvu.CCCD = item.CCCD;
                     dvu.Email = item.Email;
-                    dvu.SDT = item.SDT; 
+                    dvu.SDT = item.SDT;
                     dvu.DiaChi = item.DiaChi;
-            
+
                     data.Add(dvu);
                 }
 
@@ -64,7 +64,7 @@ namespace DAO
             using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
             {
                 var tenDV = from ma in db.DichVus
-                            
+
                             select new
                             {
                                 ma.MaDichVu,
@@ -82,8 +82,8 @@ namespace DAO
             }
         }
 
-    
-    public void LoadDGVForm(TextBox maKH, ComboBox maDichVu, TextBox tenKH, TextBox cccd,TextBox email, TextBox sdt,TextBox diaChi, DataGridView data)
+
+        public void LoadDGVForm(TextBox maKH, ComboBox maDichVu, TextBox tenKH, TextBox cccd, TextBox email, TextBox sdt, TextBox diaChi, DataGridView data)
         {
             using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
             {
@@ -127,13 +127,13 @@ namespace DAO
 
                 using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
                 {
-                    
+
                     db.KhachHangs.InsertOnSubmit(kh);
                     db.SubmitChanges();
                     MessageBox.Show("Thêm thành công");
                 }
             }
-            catch (Exception )
+            catch (Exception)
             {
 
                 MessageBox.Show("Thêm vào bị lỗi ");
@@ -176,7 +176,7 @@ namespace DAO
 
                     // Commit changes to the database
                     db.SubmitChanges();
-                   
+
                     return true;
                 }
                 return false; // Customer not found
@@ -190,7 +190,7 @@ namespace DAO
                 // Sử dụng LINQ để kiểm tra trùng mã
                 return context.KhachHangs.Any(dv => dv.MaKhachHang == maKH);
             }
-            
+
         }
 
     }

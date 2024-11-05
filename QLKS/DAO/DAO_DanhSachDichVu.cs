@@ -79,9 +79,10 @@ namespace DAO
                 var tenDV = from ma in db.DichVus
                             select new
                             {
-                                ma.MaDichVu,ma.TenDichVu
+                                ma.MaDichVu,
+                                ma.TenDichVu
                             };
-                               
+
 
                 foreach (var item in tenDV)
                 {
@@ -101,7 +102,7 @@ namespace DAO
                 var row = data.Rows[rowIndex];
                 maSDDichVu.Text = row.Cells[0].Value.ToString().Trim();
                 maDichVu.SelectedValue = row.Cells[1].Value.ToString().Trim();
-                maDatPhong.SelectedValue = row.Cells[2].Value.ToString().Trim();
+                maDatPhong.Text = row.Cells[2].Value.ToString().Trim();
                 soLuong.Text = row.Cells[3].Value.ToString().Trim();
             }
         }
@@ -155,7 +156,7 @@ namespace DAO
                 var maSDDV = db.DanhSachSuDungDichVus.SingleOrDefault(a => a.MaSuDungDichVu == daDV.MaSuDungDichVu);
                 if (maSDDV != null)
                 {
-                   
+
                     maSDDV.MaDichVu = daDV.MaDichVu;
                     maSDDV.MaDatPhong = daDV.MaDatPhong;
                     maSDDV.SoLuong = daDV.SoLuong;
