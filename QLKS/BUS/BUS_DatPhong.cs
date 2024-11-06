@@ -62,20 +62,29 @@ namespace BUS
         }
         public void LoadComBoBoxMaKHachHang(ComboBox cb)
         {
-            DAO_DatPhong.Instance.LoadComBoBoxKhachHang(cb);
+            DAO_DatPhong.Instance.LoadComBoBoxKhachHang(cb.Text);
         }
+        public string LayMaKHachHang(ComboBox cb)
+        {
+            return DAO_DatPhong.Instance.LaymaKhachHang(cb.Text);
+        }
+
         public void LoadComBoBoxMaDatPhong(ComboBox cb)
         {
             DAO_DatPhong.Instance.LoadComBoBoxDatPhong(cb);
         }
 
-        public void LoadComBoBoxLoaiPhong(ComboBox cb)
+        public void LoadComBoBoxLoaiPhong(ComboBox cb, string maphong, TextBox tinhtrang)
         {
-            DAO_DatPhong.Instance.LoadComBoBoxLoaiPhong(cb);
+            DAO_DatPhong.Instance.LoadComBoBoxLoaiPhong(cb, maphong, tinhtrang);
         }
         public void LoadComBoBoxMaPhong(ComboBox cb)
         {
             DAO_DatPhong.Instance.LoadComBoBoxPhong(cb);
+        }
+        public void LoadTenKhachHang(ComboBox cb)
+        {
+            DAO_DatPhong.Instance.LoadTenKhachhangODatPhong(cb);
         }
         public void LoadDGVLenFormDP(TextBox maDP, ComboBox maKH, DataGridView data)
         {
@@ -118,21 +127,21 @@ namespace BUS
         {
             return DAO_DatPhong.Instance.GetCustomerNameByBookingId(maDatPhong);
         }
-        public (string TenLoaiPhong, string TinhTrang) GetRoomInfo(string maPhong)
-        {
-            return DAO_DatPhong.Instance.GetRoomInfoById(maPhong);
-        }
+        //public (string TenLoaiPhong, string TinhTrang) GetRoomInfo(string maPhong)
+        //{
+        //    return DAO_DatPhong.Instance.GetRoomInfoById(maPhong);
+        //}
 
-        public void AddBookingDetail(TextBox maCT,ComboBox maDatP,TextBox maKH,ComboBox maPhong, TextBox tenPhong,TextBox tinhTrang,TextBox gia,TextBox soLuong,TextBox TongGia, ComboBox pTTT,DateTime ngayNhan, DateTime ngayTra)
+        public void AddBookingDetail(TextBox maCT,ComboBox maDatP,string maKH,ComboBox maPhong, ComboBox tenPhong,TextBox tinhTrang,TextBox gia,TextBox soLuong,TextBox TongGia, ComboBox pTTT,DateTime ngayNhan, DateTime ngayTra)
         {
            
             ChiTietDatPhong chiTietDatPhong = new ChiTietDatPhong
             {
                 MaChiTietDatPhong = maCT.Text, // Mã sẽ được sinh tự động trong thực tế
-                MaDatPhong = maDatP.SelectedValue.ToString(),
-                MaKhachHang = maKH.Text,
-                MaPhong = maPhong.SelectedValue.ToString(),
-                MaLoaiPhong = tenPhong.Text,
+                MaDatPhong = maDatP.Text,
+                MaKhachHang = maKH,
+                MaPhong = maPhong.Text,
+                MaLoaiPhong = tenPhong.SelectedValue.ToString(),
                 TinhTrang = tinhTrang.Text,
                 GiaMoiDem = float.Parse(gia.Text.Trim()),
                 SoLuongPhong = int.Parse(soLuong.Text.Trim()),
@@ -153,6 +162,27 @@ namespace BUS
 
             // Gọi lớp DAO để thêm chi tiết đặt phòng
             DAO_DatPhong.Instance.ThemChiTietDatPhong(chiTietDatPhong);
+        }
+        public void LoadDuLieuLenChiTiet(TextBox ma, ComboBox maDP, ComboBox maKH, ComboBox maP, ComboBox maL, TextBox tinhTrang, TextBox gia, TextBox soLuong, TextBox tong, DateTimePicker ngayNhan, DateTimePicker ngayTra, DataGridView data)
+        {
+            DAO_DatPhong.Instance.LoadDGVFormCTDatPhong(ma, maDP, maKH, maP, maL, tinhTrang, gia, soLuong, tong, ngayNhan, ngayTra, data);
+        }
+
+        // Method to check room availability and add booking detail
+        public bool AddBookingDetailIfAvailable(string maPhong, ChiTietDatPhong bookingDetail)
+        {
+            // Check room status
+            string roomStatus = DAO_DatPhong.Instance.GetRoomStatusById(maPhong);
+
+            // If room is in use or under maintenance, return false
+            if (roomStatus == "Đang sử dụng" || roomStatus == "Đang bảo trì")
+            {
+                return false;
+            }
+
+            // Add booking if the room is available
+            DAO_DatPhong.Instance.ThemChiTietDatPhong(bookingDetail);
+            return true;
         }
     }
 

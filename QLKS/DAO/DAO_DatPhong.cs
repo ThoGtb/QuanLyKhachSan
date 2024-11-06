@@ -96,26 +96,8 @@ namespace DAO
             return data;
 
         }
-        public void LoadComBoBoxDatPhong(ComboBox cb)
-        {
-            Dictionary<string, string> dp = new Dictionary<string, string>();
-            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
-            {
-                var maDPhong = from ma in db.DatPhongs
-                               select (
-                                   ma.MaDatPhong);
 
-                foreach (var item in maDPhong)
-                {
-                    dp.Add(item, item);
-                }
-
-                cb.DataSource = new BindingSource(dp, null);
-                cb.DisplayMember = "Value";
-                cb.ValueMember = "Key";
-            }
-        }
-        public void LoadComBoBoxKhachHang(ComboBox cb)
+        public void LoadTenKhachhangODatPhong(ComboBox cb)
         {
             Dictionary<string, string> dp = new Dictionary<string, string>();
             using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
@@ -126,7 +108,7 @@ namespace DAO
                                ma.MaKhachHang,
                                ma.TenKhachHang
                            };
-                                 
+
 
                 foreach (var item in maKH)
                 {
@@ -138,6 +120,39 @@ namespace DAO
                 cb.ValueMember = "Key";
             }
         }
+
+        public void LoadComBoBoxDatPhong(ComboBox cb)
+        {
+            cb.Items.Clear(); // Clear existing items to avoid duplication
+
+            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
+            {
+                var maDPhong = from ma in db.DatPhongs
+                               select ma.MaDatPhong;
+
+                foreach (var item in maDPhong)
+                {
+                    cb.Items.Add(item); // Add each item individually
+                }
+            }
+        }
+
+        public string LoadComBoBoxKhachHang(string tenKH)
+        {
+            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
+            {
+                string b = "";
+                if (tenKH != "")
+                {
+                    var tkh = db.KhachHangs.FirstOrDefault(x => x.TenKhachHang == tenKH);
+                    b = tkh.MaKhachHang;
+                }                  
+                return b;
+
+            }
+        }
+
+
         public void LoadDGVFormDatPhong( TextBox maDatPhong, ComboBox maKH, DataGridView data)
         {
             using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
@@ -150,6 +165,8 @@ namespace DAO
              
             }
         }
+
+
         public void ThemDP(DatPhong dv)
         {
             try
@@ -234,29 +251,41 @@ namespace DAO
 
 
 
-        public void LoadComBoBoxLoaiPhong(ComboBox cb)
+        public void LoadComBoBoxLoaiPhong(ComboBox cb, string maphong, TextBox tinhtrang)
         {
+            // Initialize the dictionary for data binding.
             Dictionary<string, string> dp = new Dictionary<string, string>();
+
             using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
             {
-                var maKH = from ma in db.LoaiPhongs
-                           select new
-                           {
-                               ma.MaLoaiPhong,
-                               ma.TenLoaiPhong
-                           };
+                // Query the database to get room details.
+                var result = (from dp1 in db.ChiTietDatPhongs
+                              join kh in db.Phongs on dp1.MaPhong equals kh.MaPhong
+                              join loai in db.LoaiPhongs on kh.MaLoaiPhong equals loai.MaLoaiPhong
+                              where dp1.MaPhong == maphong
+                              select new { loai.TenLoaiPhong, kh.TinhTrang, loai.MaLoaiPhong }).FirstOrDefault();
 
-
-                foreach (var item in maKH)
+                // Check if a result was found.
+                if (result != null)
                 {
-                    dp.Add(item.MaLoaiPhong, item.TenLoaiPhong);
+                    // Add the result to the dictionary.
+                    dp.Add(result.MaLoaiPhong, result.TenLoaiPhong);
+
+                    // Bind the dictionary to the ComboBox.
+                    cb.DataSource = new BindingSource(dp, null);
+                    cb.DisplayMember = "Value";
+                    cb.ValueMember = "Key";
+
+                    // Set the TextBox value.
+                    tinhtrang.Text = result.TinhTrang;
                 }
-
-                cb.DataSource = new BindingSource(dp, null);
-                cb.DisplayMember = "Value";
-                cb.ValueMember = "Key";
+                else
+                {
+                    // If no result is found, clear the ComboBox and TextBox.
+                    cb.DataSource = null;
+                    tinhtrang.Clear();
+                }
             }
-
         }
 
         public void LoadComBoBoxPhong(ComboBox cb)
@@ -279,17 +308,40 @@ namespace DAO
             }
         }
 
-        public (string TenLoaiPhong, string TinhTrang) GetRoomInfoById(string maPhong)
+        public void LoadDGVFormCTDatPhong(TextBox ma, ComboBox maDP, ComboBox maKH, ComboBox maP, ComboBox maL, TextBox tinhTrang,TextBox gia,TextBox soLuong,TextBox tong,DateTimePicker ngayNhan,DateTimePicker ngayTra, DataGridView data)
         {
             using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
             {
-                var result = (from dp in db.ChiTietDatPhongs
-                              join kh in db.Phongs on dp.MaPhong equals kh.MaPhong
-                              join loai in db.LoaiPhongs on kh.MaLoaiPhong equals loai.MaLoaiPhong // Corrected dp.MaLoaiPhong to kh.MaLoaiPhong
-                              where dp.MaPhong == maPhong
-                              select new { loai.TenLoaiPhong, kh.TinhTrang }).FirstOrDefault();
+                var rowIndex = data.SelectedCells[0].RowIndex;
+                var row = data.Rows[rowIndex];
 
-                return result != null ? (result.TenLoaiPhong, result.TinhTrang) : (null, null);
+                ma.Text = row.Cells[0].Value.ToString().Trim();
+                maDP.Text = row.Cells[1].Value.ToString().Trim();
+                maKH.SelectedValue = row.Cells[2].Value != null ? row.Cells[2].Value.ToString().Trim() : null;
+                maP.Text = row.Cells[3].Value.ToString().Trim() ;
+                maL.SelectedValue = row.Cells[4].Value != null ? row.Cells[4].Value.ToString().Trim() : null;
+                tinhTrang.Text = row.Cells[5].Value.ToString().Trim();
+                gia.Text = row.Cells[6].Value.ToString().Trim();
+                soLuong.Text = row.Cells[7].Value.ToString().Trim();
+                tong.Text = row.Cells[8].Value.ToString().Trim();
+                // Parse the date fields safely
+                if (DateTime.TryParse(row.Cells[9].Value?.ToString(), out DateTime ngayNhanValue))
+                {
+                    ngayNhan.Value = ngayNhanValue;
+                }
+                else
+                {
+                    ngayNhan.Value = DateTime.Now; // Set a default date if parsing fails
+                }
+
+                if (DateTime.TryParse(row.Cells[10].Value?.ToString(), out DateTime ngayTraValue))
+                {
+                    ngayTra.Value = ngayTraValue;
+                }
+                else
+                {
+                    ngayTra.Value = DateTime.Now;
+                }
             }
         }
 
@@ -308,6 +360,44 @@ namespace DAO
             catch (Exception )
             {
                 MessageBox.Show("Thêm chi tiết đặt phòng bị lỗi: " );
+            }
+        }
+        public void Xoa(string maCTDP)
+        {
+            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
+            {
+                var ma = db.ChiTietDatPhongs.FirstOrDefault(a => a.MaChiTietDatPhong == maCTDP);
+                if (ma != null)
+                {
+                    db.ChiTietDatPhongs.DeleteOnSubmit(ma);
+                    db.SubmitChanges();
+                    MessageBox.Show("Xóa thành công");
+                }
+                else
+                {
+                    MessageBox.Show("Xóa không thành công");
+                }
+            }
+        }
+
+        public string LaymaKhachHang(string tenKH)
+        {
+            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
+            {
+                string b = "";
+                var a = db.KhachHangs.FirstOrDefault(x=> x.TenKhachHang == tenKH);
+                b = a.MaKhachHang;
+                return b;
+            }
+        }
+
+        // Method to get room status by room ID
+        public string GetRoomStatusById(string maPhong)
+        {
+            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
+            {
+                var room = db.Phongs.FirstOrDefault(p => p.MaPhong == maPhong);
+                return room?.TinhTrang;  // Returns the room status or null if not found
             }
         }
 

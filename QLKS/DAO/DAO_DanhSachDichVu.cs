@@ -99,9 +99,10 @@ namespace DAO
             {
                 var rowIndex = data.SelectedCells[0].RowIndex;
                 var row = data.Rows[rowIndex];
+
                 maSDDichVu.Text = row.Cells[0].Value.ToString().Trim();
-                maDichVu.SelectedValue = row.Cells[1].Value.ToString().Trim();
-                maDatPhong.SelectedValue = row.Cells[2].Value.ToString().Trim();
+                maDichVu.SelectedValue = row.Cells[1].Value != null ? row.Cells[1].Value.ToString().Trim() : null;
+                maDatPhong.SelectedValue = row.Cells[2].Value != null ? row.Cells[2].Value.ToString().Trim() : null;
                 soLuong.Text = row.Cells[3].Value.ToString().Trim();
             }
         }
@@ -155,12 +156,13 @@ namespace DAO
                 var maSDDV = db.DanhSachSuDungDichVus.SingleOrDefault(a => a.MaSuDungDichVu == daDV.MaSuDungDichVu);
                 if (maSDDV != null)
                 {
-                   
+                    
                     maSDDV.MaDichVu = daDV.MaDichVu;
                     maSDDV.MaDatPhong = daDV.MaDatPhong;
                     maSDDV.SoLuong = daDV.SoLuong;
+
                     db.SubmitChanges();
-                    MessageBox.Show("Sửa thành công");
+                  
                     return true;
                 }
                 return false;
@@ -174,7 +176,6 @@ namespace DAO
                 return context.DanhSachSuDungDichVus.Any(dv => dv.MaSuDungDichVu == maSDDV);
             }
         }
-
 
     }
 }

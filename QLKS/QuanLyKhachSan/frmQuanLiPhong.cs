@@ -14,6 +14,7 @@ namespace QuanLyKhachSan
 {
     public partial class frmQuanLiPhong : Form
     {
+        private string makh = "";
         private ErrorProvider errorProvider1 = new ErrorProvider();  // Khai báo ErrorProvider
         public frmQuanLiPhong()
         {
@@ -21,6 +22,7 @@ namespace QuanLyKhachSan
             LoadDuLieuLen();
             LoadMaKhachHang();
             LoadMaDatPhong();
+            cbMaPhong.SelectedIndex = 0;
             //cbMaPhong.SelectedIndexChanged += cbMaPhong_SelectedIndexChanged;
 
             // Gán sự kiện cho TextChanged
@@ -53,8 +55,13 @@ namespace QuanLyKhachSan
         }
         public void LoadMaKhachHang()
         {
-            BUS_DatPhong.Instance.LoadComBoBoxMaKHachHang(cbMaKH);
+            //Load cho tên khách hàng ở đặt phòng
+            BUS_DatPhong.Instance.LoadTenKhachHang(cbMaKH);
             //BUS_DatPhong.Instance.LoadComBoBoxLoaiPhong(cbMaLoaiPhong);
+
+
+
+            //Laod mã phòng ở chi tiết đặt phòng
             BUS_DatPhong.Instance.LoadComBoBoxMaPhong(cbMaPhong);
         }
         public void LoadMaDatPhong()
@@ -111,35 +118,39 @@ namespace QuanLyKhachSan
 
         private void cbMaDatPhong_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbMaDatPhong.SelectedValue != null)
+            if (cbMaDatPhong.Text != null)
             {
-                string selectedBookingId = cbMaDatPhong.SelectedValue.ToString();
+                string selectedBookingId = cbMaDatPhong.Text;
                 string customerName = BUS_DatPhong.Instance.GetCustomerNameByBookingId(selectedBookingId);
-                txtMaKhachHang.Text = customerName; // Display customer name in TextBox
+                cbMaKhachHang.Text = customerName; // Display customer name in TextBox
+                BUS_DatPhong.Instance.LoadComBoBoxMaKHachHang(cbMaKH);
+                makh = BUS_DatPhong.Instance.LayMaKHachHang(cbMaKH);
             }
+            
         }
 
         private void cbMaPhong_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string selectedRoomCode = cbMaPhong.SelectedValue.ToString();
-            if (!string.IsNullOrEmpty(selectedRoomCode))
-            {
-                // Lấy thông tin phòng từ BUS layer
-                var roomInfo = BUS_DatPhong.Instance.GetRoomInfo(selectedRoomCode);
+            //string selectedRoomCode = cbMaPhong.SelectedValue.ToString();
+            //if (!string.IsNullOrEmpty(selectedRoomCode))
+            //{
+            //    // Lấy thông tin phòng từ BUS layer
+            //    var roomInfo = BUS_DatPhong.Instance.GetRoomInfo(selectedRoomCode);
 
-                // Hiển thị thông tin vào các TextBox
-                if (roomInfo.TenLoaiPhong != null && roomInfo.TinhTrang != null)
-                {
-                    txtMaLoaiPhong.Text = roomInfo.TenLoaiPhong; // Hiển thị tên loại phòng
-                    txtTinhTrangPhong.Text = roomInfo.TinhTrang; // Hiển thị tình trạng phòng
-                }
-                else
-                {
-                    txtMaLoaiPhong.Text = "Not Found";
-                    txtTinhTrangPhong.Text = "Not Found";
-                }
-            
-            }
+            //    // Hiển thị thông tin vào các TextBox
+            //    if (roomInfo.TenLoaiPhong != null && roomInfo.TinhTrang != null)
+            //    {
+            //        txtMaLoaiPhong.Text = roomInfo.TenLoaiPhong; // Hiển thị tên loại phòng
+            //        txtTinhTrangPhong.Text = roomInfo.TinhTrang; // Hiển thị tình trạng phòng
+            //    }
+            //    else
+            //    {
+            //        txtMaLoaiPhong.Text = "Not Found";
+            //        txtTinhTrangPhong.Text = "Not Found";
+            //    }
+
+            //}
+            BUS_DatPhong.Instance.LoadComBoBoxLoaiPhong(cbMaLoaiPhong, cbMaPhong.Text, txtTinhTrangPhong);
         }
 
         private void btnThem_Click(object sender, EventArgs e)
@@ -147,7 +158,6 @@ namespace QuanLyKhachSan
             // Validate inputs
             if (string.IsNullOrWhiteSpace(txtMaChiTiet.Text) ||
                 cbMaDatPhong.SelectedItem == null ||
-                string.IsNullOrWhiteSpace(txtMaKhachHang.Text) ||
                 cbMaPhong.SelectedItem == null ||
                 string.IsNullOrWhiteSpace(txtGia.Text) ||
                 string.IsNullOrWhiteSpace(txtSoLuong.Text) ||
@@ -163,9 +173,9 @@ namespace QuanLyKhachSan
                 BUS_DatPhong.Instance.AddBookingDetail(
                     txtMaChiTiet,
                     cbMaDatPhong,
-                    txtMaKhachHang,
+                    makh,
                     cbMaPhong,
-                    txtMaLoaiPhong,
+                    cbMaLoaiPhong,
                     txtTinhTrangPhong,
                     txtGia,
                     txtSoLuong,
@@ -224,6 +234,26 @@ namespace QuanLyKhachSan
         private void txtSoLuong_TextChanged(object sender, EventArgs e)
         {
           
+        }
+
+        private void frmQuanLiPhong_Load(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void cbMaPhong_TextChanged(object sender, EventArgs e)
+        {
+            //BUS_DatPhong.Instance.LoadComBoBoxLoaiPhong(cbMaLoaiPhong, cbMaPhong.Text, txtTinhTrangPhong);
+        }
+
+        private void dgvDatPhong_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        {
+            BUS_DatPhong.Instance.LoadDuLieuLenChiTiet(txtMaChiTiet,cbMaDatPhong,cbMaKhachHang,cbMaPhong,cbMaLoaiPhong,txtTinhTrangPhong,txtGia,txtSoLuong,txtTongGia,dtpNgayNhan,dtpNgayTra,dgvDatPhongg);
+
+            txtMaChiTiet.Enabled = false;
+
+            // Clear any existing errors first
+            errorProvider1.SetError(txtMaChiTiet, "");
         }
     }
 

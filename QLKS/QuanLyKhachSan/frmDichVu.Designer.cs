@@ -50,7 +50,6 @@
             this.btnLamMoi = new System.Windows.Forms.Button();
             this.btnThem = new System.Windows.Forms.Button();
             this.btnCapNhap = new System.Windows.Forms.Button();
-            this.btnHuyPhieu = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.cbMaDatPhong = new System.Windows.Forms.ComboBox();
             this.cbMaDichVu = new System.Windows.Forms.ComboBox();
@@ -309,7 +308,6 @@
             this.tbSĐichVu.Controls.Add(this.btnLamMoi);
             this.tbSĐichVu.Controls.Add(this.btnThem);
             this.tbSĐichVu.Controls.Add(this.btnCapNhap);
-            this.tbSĐichVu.Controls.Add(this.btnHuyPhieu);
             this.tbSĐichVu.Controls.Add(this.groupBox3);
             this.tbSĐichVu.Controls.Add(this.groupBox4);
             this.tbSĐichVu.Controls.Add(this.btnThoatt);
@@ -350,7 +348,7 @@
             // btnCapNhap
             // 
             this.btnCapNhap.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCapNhap.Location = new System.Drawing.Point(795, 759);
+            this.btnCapNhap.Location = new System.Drawing.Point(681, 759);
             this.btnCapNhap.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnCapNhap.Name = "btnCapNhap";
             this.btnCapNhap.Size = new System.Drawing.Size(148, 48);
@@ -358,18 +356,6 @@
             this.btnCapNhap.Text = "Cập Nhật";
             this.btnCapNhap.UseVisualStyleBackColor = true;
             this.btnCapNhap.Click += new System.EventHandler(this.btnCapNhap_Click);
-            // 
-            // btnHuyPhieu
-            // 
-            this.btnHuyPhieu.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnHuyPhieu.Location = new System.Drawing.Point(540, 759);
-            this.btnHuyPhieu.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnHuyPhieu.Name = "btnHuyPhieu";
-            this.btnHuyPhieu.Size = new System.Drawing.Size(148, 48);
-            this.btnHuyPhieu.TabIndex = 19;
-            this.btnHuyPhieu.Text = "Xóa Phiếu";
-            this.btnHuyPhieu.UseVisualStyleBackColor = true;
-            this.btnHuyPhieu.Click += new System.EventHandler(this.btnHuyPhieu_Click);
             // 
             // groupBox3
             // 
@@ -744,7 +730,6 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Button btnThem;
         private System.Windows.Forms.Button btnCapNhap;
-        private System.Windows.Forms.Button btnHuyPhieu;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ComboBox cbMaDatPhong;
         private System.Windows.Forms.ComboBox cbMaDichVu;

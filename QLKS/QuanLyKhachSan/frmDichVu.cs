@@ -102,9 +102,7 @@ namespace QuanLyKhachSan
         private void btnHuyPhieu_Click(object sender, EventArgs e)
         {
             
-                BUS_DanhSachDichVu.Instance.Xoa(txtMaSDDV);
-                ClearFormFields();
-               
+                
             
 
         }
@@ -144,12 +142,10 @@ namespace QuanLyKhachSan
               
                 BUS_DanhSachDichVu.Instance.Sua(txtMaSDDV, cbMaDichVu, cbMaDatPhong, txtSoLuong);
                 LoadDuLieuLenForm();
+
                 txtMaSDDV.Enabled = true;
             }
-            else
-            {
-                MessageBox.Show("Sửa ko thành công");
-            }
+            
           
         }
 

@@ -72,11 +72,20 @@ namespace BUS
             DanhSachSuDungDichVu dsdv = new DanhSachSuDungDichVu
             {
                 MaSuDungDichVu = ma.Text,
-                MaDichVu = maDichVu.Text,
+                MaDichVu = maDichVu.SelectedValue.ToString(),
                 MaDatPhong = maDatPhong.Text,
                 SoLuong = int.Parse(soLuong.Text),
             };
-            DAO_DanhSachDichVu.Instance.Sua(dsdv);
+           
+            bool result =  DAO_DanhSachDichVu.Instance.Sua(dsdv); // Capture the result
+            if (result)
+            {
+                MessageBox.Show("Sửa thành công!");
+            }
+            else
+            {
+                MessageBox.Show("Danh sach sử dụng dịch vụ không tồn tại hoặc sửa thất bại!");
+            }
         }
         // Phương thức gọi DAL để kiểm tra trùng mã sử dụng dịch vụ
         public bool CheckMaSDDVExists(string maSDDV)
