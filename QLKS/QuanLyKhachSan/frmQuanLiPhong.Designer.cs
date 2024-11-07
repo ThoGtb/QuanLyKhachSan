@@ -44,7 +44,6 @@
             this.btnXoa = new System.Windows.Forms.Button();
             this.btnSua = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.cbMaKhachHang = new System.Windows.Forms.ComboBox();
             this.cbMaLoaiPhong = new System.Windows.Forms.ComboBox();
             this.cbMaDatPhong = new System.Windows.Forms.ComboBox();
             this.cbMaPhong = new System.Windows.Forms.ComboBox();
@@ -76,6 +75,7 @@
             this.btnThem = new System.Windows.Forms.Button();
             this.btnDatPhong = new System.Windows.Forms.Button();
             this.btnTimKiem = new System.Windows.Forms.Button();
+            this.cbMaKhachHang = new System.Windows.Forms.ComboBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -265,7 +265,6 @@
             this.btnXoa.TabIndex = 39;
             this.btnXoa.Text = "Xóa";
             this.btnXoa.UseVisualStyleBackColor = false;
-            this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
             // 
             // btnSua
             // 
@@ -278,7 +277,6 @@
             this.btnSua.TabIndex = 40;
             this.btnSua.Text = "Sửa";
             this.btnSua.UseVisualStyleBackColor = false;
-            this.btnSua.Click += new System.EventHandler(this.btnSua_Click);
             // 
             // groupBox1
             // 
@@ -315,15 +313,6 @@
             this.groupBox1.TabIndex = 28;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Chi tiết đặt phòng";
-            // 
-            // cbMaKhachHang
-            // 
-            this.cbMaKhachHang.FormattingEnabled = true;
-            this.cbMaKhachHang.Location = new System.Drawing.Point(1202, 50);
-            this.cbMaKhachHang.Margin = new System.Windows.Forms.Padding(4);
-            this.cbMaKhachHang.Name = "cbMaKhachHang";
-            this.cbMaKhachHang.Size = new System.Drawing.Size(241, 30);
-            this.cbMaKhachHang.TabIndex = 10;
             // 
             // cbMaLoaiPhong
             // 
@@ -363,7 +352,6 @@
             this.dtpNgayTra.Name = "dtpNgayTra";
             this.dtpNgayTra.Size = new System.Drawing.Size(241, 30);
             this.dtpNgayTra.TabIndex = 3;
-            this.dtpNgayTra.ValueChanged += new System.EventHandler(this.dtpNgayTra_ValueChanged);
             // 
             // txtGia
             // 
@@ -383,7 +371,6 @@
             this.dtpNgayNhan.Name = "dtpNgayNhan";
             this.dtpNgayNhan.Size = new System.Drawing.Size(241, 30);
             this.dtpNgayNhan.TabIndex = 3;
-            this.dtpNgayNhan.ValueChanged += new System.EventHandler(this.dtpNgayNhan_ValueChanged);
             // 
             // txtTongGia
             // 
@@ -392,7 +379,6 @@
             this.txtTongGia.Name = "txtTongGia";
             this.txtTongGia.Size = new System.Drawing.Size(241, 28);
             this.txtTongGia.TabIndex = 1;
-            this.txtTongGia.TextChanged += new System.EventHandler(this.txtTongGia_TextChanged);
             // 
             // txtTinhTrangPhong
             // 
@@ -422,7 +408,6 @@
             this.txtSoLuong.Size = new System.Drawing.Size(241, 28);
             this.txtSoLuong.TabIndex = 1;
             this.txtSoLuong.TextChanged += new System.EventHandler(this.txtSoLuong_TextChanged);
-            this.txtSoLuong.Leave += new System.EventHandler(this.txtSoLuong_Leave);
             // 
             // label10
             // 
@@ -505,9 +490,9 @@
             this.label11.Location = new System.Drawing.Point(1031, 51);
             this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(161, 25);
+            this.label11.Size = new System.Drawing.Size(154, 25);
             this.label11.TabIndex = 0;
-            this.label11.Text = "Tên Khách Hàng";
+            this.label11.Text = "Mã Khách Hàng";
             // 
             // label2
             // 
@@ -662,6 +647,15 @@
             this.btnTimKiem.TabIndex = 34;
             this.btnTimKiem.Text = "Tìm Kiếm";
             this.btnTimKiem.UseVisualStyleBackColor = false;
+            // 
+            // cbMaKhachHang
+            // 
+            this.cbMaKhachHang.FormattingEnabled = true;
+            this.cbMaKhachHang.Location = new System.Drawing.Point(1202, 50);
+            this.cbMaKhachHang.Margin = new System.Windows.Forms.Padding(4);
+            this.cbMaKhachHang.Name = "cbMaKhachHang";
+            this.cbMaKhachHang.Size = new System.Drawing.Size(241, 30);
+            this.cbMaKhachHang.TabIndex = 10;
             // 
             // frmQuanLiPhong
             // 
