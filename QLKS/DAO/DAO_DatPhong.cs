@@ -451,5 +451,12 @@ namespace DAO
                 return false;
             }
         }
+        public bool KiemTraMaChiTietTonTai(string maChiTiet)
+        {
+            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
+            {
+                return db.ChiTietDatPhongs.Any(ct => ct.MaChiTietDatPhong == maChiTiet);
+            }
+        }
     }
 }
