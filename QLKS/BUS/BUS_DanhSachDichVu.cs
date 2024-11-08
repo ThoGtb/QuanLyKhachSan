@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace BUS
 {
     public class BUS_DanhSachDichVu
     {
-        private static BUS_DanhSachDichVu instance;    
-        DAO_DanhSachDichVu daoDSDV = new DAO_DanhSachDichVu();
+        private static BUS_DanhSachDichVu instance;
         public static BUS_DanhSachDichVu Instance
         {
             get
@@ -23,7 +23,7 @@ namespace BUS
                 return instance;
             }
         }
-        public BUS_DanhSachDichVu() { }
+        private BUS_DanhSachDichVu() { }
 
         public void Xem(DataGridView data)
         {
@@ -47,37 +47,51 @@ namespace BUS
         { 
             DAO_DanhSachDichVu.Instance.LoadComBoBoxDichVu(cb);
         }
-        public void LoadDGVLenForm(TextBox ma,ComboBox maDV, ComboBox maDP,TextBox soLuong,DataGridView data)
+        public void LoadDGVLenForm(TextBox ma, ComboBox maDV, ComboBox maDP, TextBox soLuong, DataGridView data)
         {
             DAO_DanhSachDichVu.Instance.LoadDGVForm(ma, maDV, maDP, soLuong, data);
         }
         public void Them(TextBox maSDDichVu, ComboBox maDichVu, ComboBox maDatPhong, TextBox soLuong)
         {
-            DAO_DanhSachDichVu.Instance.Them(maSDDichVu, maDichVu, maDatPhong, soLuong);
+            DanhSachSuDungDichVu sd = new DanhSachSuDungDichVu
+            {
+                MaSuDungDichVu = maSDDichVu.Text,
+                MaDichVu = maDichVu.SelectedValue.ToString(),
+                MaDatPhong = maDatPhong.Text,
+                SoLuong = int.Parse(soLuong.Text)
+               
+            };
+            DAO_DanhSachDichVu.Instance.Them(sd);
         }
         public void Xoa(TextBox maSD)
         {
             DAO_DanhSachDichVu.Instance.Xoa(maSD.Text);
         }
-        public void Sua(TextBox maSDDichVu, ComboBox maDichVu, ComboBox maDatPhong, TextBox soLuong)
+        public void Sua(TextBox ma, ComboBox maDichVu, ComboBox maDatPhong, TextBox soLuong)
         {
             DanhSachSuDungDichVu dsdv = new DanhSachSuDungDichVu
             {
-                MaSuDungDichVu = maSDDichVu.Text,
-                MaDichVu = maDichVu.Text,
+                MaSuDungDichVu = ma.Text,
+                MaDichVu = maDichVu.SelectedValue.ToString(),
                 MaDatPhong = maDatPhong.Text,
                 SoLuong = int.Parse(soLuong.Text),
             };
-            DAO_DanhSachDichVu.Instance.Sua(dsdv);
+           
+            bool result =  DAO_DanhSachDichVu.Instance.Sua(dsdv); // Capture the result
+            if (result)
+            {
+                MessageBox.Show("Sửa thành công!");
+            }
+            else
+            {
+                MessageBox.Show("Danh sach sử dụng dịch vụ không tồn tại hoặc sửa thất bại!");
+            }
         }
         // Phương thức gọi DAL để kiểm tra trùng mã sử dụng dịch vụ
         public bool CheckMaSDDVExists(string maSDDV)
         {
             return DAO_DanhSachDichVu.Instance.CheckMaSDDVExists(maSDDV);
         }
-        public List<DanhSachSuDungDichVu> HienThi()
-        {
-            return daoDSDV.Xem();
-        }
+
     }
 }
