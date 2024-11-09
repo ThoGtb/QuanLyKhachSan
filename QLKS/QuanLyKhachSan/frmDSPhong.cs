@@ -24,7 +24,6 @@ namespace QuanLyKhachSan
 
         private void frmPhong_Load(object sender, EventArgs e)
         {
-            
             LoadViewPhong();
             dgvDanhSachPhong.Columns["LoaiPhong"].Visible = false;
             LoadViewLoaiPhong();
@@ -67,16 +66,16 @@ namespace QuanLyKhachSan
         }
         private void btnThem_Click_2(object sender, EventArgs e)
         {
-            errorProvider1.Clear();
-
-            // Lấy dữ liệu từ các điều khiển
-            string maPhong = ccbMaPhong.Text;
-            string maLoaiPhong = cbMaLoaiPhong.SelectedValue?.ToString();
-            string soPhong = txtSoPhong.Text;
+            string maPhong = txtMaPhong.Text;
+            string maLoaiPhong = cbMaLoaiPhong.SelectedValue.ToString();
+            int soPhong;
             string tinhTrang = cbtinhTrang.Text;
 
-            // Kiểm tra tính hợp lệ của các trường nhập
-            if (!ValidateInput(maPhong, maLoaiPhong, soPhong, tinhTrang))
+            // Kiểm tra dữ liệu đầu vào có hợp lệ không
+            if (string.IsNullOrWhiteSpace(maPhong) ||
+                string.IsNullOrWhiteSpace(maLoaiPhong) ||
+                !int.TryParse(txtSoPhong.Text, out soPhong) ||
+                string.IsNullOrWhiteSpace(tinhTrang))
             {
                 MessageBox.Show("Vui lòng nhập đầy đủ thông tin.");
                 return;
@@ -98,7 +97,7 @@ namespace QuanLyKhachSan
 
         private void btnXoa_Click_1(object sender, EventArgs e)
         {
-            string maPhong = ccbMaPhong.Text;
+            string maPhong = txtMaPhong.Text;
 
             // Kiểm tra xem người dùng có nhập mã phòng không
             if (string.IsNullOrWhiteSpace(maPhong))
@@ -124,16 +123,14 @@ namespace QuanLyKhachSan
 
         private void btnSua_Click_1(object sender, EventArgs e)
         {
-            string maPhong = ccbMaPhong.Text;
+            string maPhong = txtMaPhong.Text;
             string maLoaiPhong = cbMaLoaiPhong.SelectedValue.ToString();
-            //int soPhong;
-            string soPhong = txtSoPhong.Text;
+            int soPhong;
             string tinhTrang = cbtinhTrang.Text;
 
             if (string.IsNullOrWhiteSpace(maPhong) ||
                 string.IsNullOrWhiteSpace(maLoaiPhong) ||
-                //!int.TryParse(txtSoPhong.Text, out soPhong) ||
-                string.IsNullOrEmpty(soPhong) ||
+                !int.TryParse(txtSoPhong.Text, out soPhong) ||
                 string.IsNullOrWhiteSpace(tinhTrang))
             {
                 MessageBox.Show("Vui lòng nhập đầy đủ thông tin.");
@@ -163,7 +160,7 @@ namespace QuanLyKhachSan
                 DataGridViewRow row = dgvDanhSachPhong.Rows[e.RowIndex];
 
                 // Hiển thị thông tin của dòng được chọn lên các TextBox tương ứng
-                ccbMaPhong.Text = row.Cells[0].Value.ToString();
+                txtMaPhong.Text = row.Cells[0].Value.ToString();
                 txtSoPhong.Text = row.Cells[2].Value.ToString();
                 string maLoaiPhong = row.Cells[1].Value.ToString();
 
@@ -183,38 +180,39 @@ namespace QuanLyKhachSan
 
         private void btnThemPhong_Click_1(object sender, EventArgs e)
         {
-            // Xóa tất cả thông báo lỗi trước khi kiểm tra
-            errorProvider2.Clear();
-
-            // Lấy dữ liệu từ các điều khiển
-            string maLoaiPhong = cbMaLoaiPhong.Text;
-            string tenPhong = txtTenLoaiPhong.Text;
-            string gia = txtGia.Text;
-
-            // Kiểm tra tính hợp lệ của các trường nhập
-            if (!ValidateInput(maLoaiPhong, tenPhong, gia, out float giaValue))
+            string maLoaiPhong = txtMaLoaiPhong.Text.Trim();
+            string tenLoaiPhong = txtTenLoaiPhong.Text.Trim();
+            float gia;
+            if (string.IsNullOrWhiteSpace(maLoaiPhong))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ thông tin.");
+                MessageBox.Show("Mã loại phòng không được để trống.");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(tenLoaiPhong))
+            {
+                MessageBox.Show("Tên loại phòng không được để trống.");
+                return;
+            }
+            if (!float.TryParse(txtGia.Text.Trim(), out gia) || gia <= 0)
+            {
+                MessageBox.Show("Giá phòng phải là số hợp lệ =.");
                 return;
             }
 
-            // Gọi phương thức thêm loại phòng từ lớp BUS
-            bool ketQua = bus_LoaiPhong.ThemLoaiPhong(maLoaiPhong, tenPhong, giaValue);
-
-            if (ketQua)
+            if (bus_LoaiPhong.ThemLoaiPhong(maLoaiPhong, tenLoaiPhong, gia))
             {
                 MessageBox.Show("Thêm loại phòng thành công!");
-               LoadViewLoaiPhong (); // Tải lại dữ liệu để cập nhật
+                LoadViewLoaiPhong();
             }
             else
             {
-                MessageBox.Show("Mã loại phòng đã tồn tại hoặc thêm loại phòng thất bại.");
+                MessageBox.Show("Thêm loại phòng thất bại. Mã loại phòng đã tồn tại.");
             }
         }
 
         private void btnXoaPhong_Click_1(object sender, EventArgs e)
         {
-            string maLoaiPhong = cbMaLoaiPhong.Text;
+            string maLoaiPhong = txtMaLoaiPhong.Text;
 
             if (bus_LoaiPhong.XoaLoaiPhong(maLoaiPhong))
             {
@@ -230,7 +228,7 @@ namespace QuanLyKhachSan
 
         private void btnCapNhat_Click_1(object sender, EventArgs e)
         {
-            string maLoaiPhong = cbMaLoaiPhong.Text;
+            string maLoaiPhong = txtMaLoaiPhong.Text;
             string tenLoaiPhong = txtTenLoaiPhong.Text;
             float gia = float.Parse(txtGia.Text);
 
@@ -247,12 +245,12 @@ namespace QuanLyKhachSan
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            this.Close();
+           this.Close();
         }
 
         private void btnThoat_Click_1(object sender, EventArgs e)
         {
-            this.Close();
+           this.Close();
         }
 
         private void dgvLoaiPhong_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -263,82 +261,10 @@ namespace QuanLyKhachSan
                 DataGridViewRow row = dgvLoaiPhong.Rows[e.RowIndex];
 
                 // Hiển thị thông tin của dòng được chọn lên các TextBox tương ứng
-                cbMaLoaiPhong.Text = row.Cells["MaLoaiPhong"].Value.ToString();
+                txtMaLoaiPhong.Text = row.Cells["MaLoaiPhong"].Value.ToString();
                 txtTenLoaiPhong.Text = row.Cells["TenLoaiPhong"].Value.ToString();
                 txtGia.Text = row.Cells["Gia"].Value.ToString();
             }
-        }
-
-        private void cbMaLoaiPhong_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-        private bool ValidateInput(string maPhong, string maLoaiPhong, string soPhong, string tinhTrang)
-        {
-            bool isValid = true;
-
-            // Kiểm tra và thiết lập thông báo lỗi cho từng điều khiển
-            if (string.IsNullOrWhiteSpace(maPhong))
-            {
-                errorProvider1.SetError(ccbMaPhong, "Mã phòng không được để trống.");
-                isValid = false;
-            }
-
-            if (string.IsNullOrWhiteSpace(maLoaiPhong))
-            {
-                errorProvider1.SetError(cbMaLoaiPhong, "Mã loại phòng không được để trống.");
-                isValid = false;
-            }
-
-            if (string.IsNullOrWhiteSpace(soPhong))
-            {
-                errorProvider1.SetError(txtSoPhong, "Số phòng không được để trống.");
-                isValid = false;
-            }
-
-            if (string.IsNullOrWhiteSpace(tinhTrang))
-            {
-                errorProvider1.SetError(cbtinhTrang, "Tình trạng không được để trống.");
-                isValid = false;
-            }
-
-            return isValid;
-        }
-        private bool ValidateInput(string maLoaiPhong, string tenPhong, string gia, out float giaValue)
-        {
-            bool isValid = true;
-            giaValue = 0; 
-
-            // Kiểm tra và thiết lập thông báo lỗi cho từng điều khiển
-            if (string.IsNullOrWhiteSpace(maLoaiPhong))
-            {
-                errorProvider2.SetError(cbMaLoaiPhong, "Mã loại phòng không được để trống.");
-                isValid = false;
-            }
-
-            if (string.IsNullOrWhiteSpace(tenPhong))
-            {
-                errorProvider2.SetError(txtTenLoaiPhong, "Tên phòng không được để trống.");
-                isValid = false;
-            }
-
-            if (string.IsNullOrWhiteSpace(gia))
-            {
-                errorProvider2.SetError(txtGia, "Giá không được để trống.");
-                isValid = false;
-            }
-            else if (!float.TryParse(gia, out giaValue))
-            {
-                errorProvider2.SetError(txtGia, "Giá phải là một số hợp lệ.");
-                isValid = false;
-            }
-            else if (giaValue < 0)
-            {
-                errorProvider2.SetError(txtGia, "Giá phải lớn hơn hoặc bằng 0.");
-                isValid = false;
-            }
-
-            return isValid;
         }
     }
 }

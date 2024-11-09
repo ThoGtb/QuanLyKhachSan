@@ -158,6 +158,7 @@ namespace QuanLyKhachSan
 
         private void btnThem_Click(object sender, EventArgs e)
         {
+            
             makh = BUS_DatPhong.Instance.LayMaKHachHang(cbMaKhachHang);
             // Validate inputs
             if (string.IsNullOrWhiteSpace(txtMaChiTiet.Text) ||
@@ -262,13 +263,67 @@ namespace QuanLyKhachSan
 
         private void txtSoLuong_Leave(object sender, EventArgs e)
         {
-            CalculateTotalPrice();
+           
+                    CalculateTotalPrice(); // Tính tổng giá khi số lượng hợp lệ
+              
+
         }
 
         private void btnSua_Click(object sender, EventArgs e)
         {
             BUS_DatPhong.Instance.SuaCT(txtMaChiTiet, cbMaDatPhong, makh, cbMaPhong, cbMaLoaiPhong, txtTinhTrangPhong, txtGia, txtSoLuong, txtTongGia, cboPTTT, dtpNgayNhan.Value, dtpNgayTra.Value);
         LoadDuLieuLen() ;
+        }
+
+        private void txtSoLuong_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Chỉ cho phép nhập số và phím Backspace
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true; // Ngăn chặn ký tự không hợp lệ
+            }
+        }
+
+        private void txtMaChiTiet_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtMaChiTiet.Text))
+            {
+                errorProvider1.SetError(txtMaChiTiet, "Mã chi tiết không được để trống.");
+            }
+            else if (BUS_DatPhong.Instance.KiemTraMaChiTietTonTai(txtMaChiTiet.Text))
+            {
+                errorProvider1.SetError(txtMaChiTiet, "Mã chi tiết đã tồn tại. Vui lòng nhập mã khác.");
+            }
+            else
+            {
+                errorProvider1.SetError(txtMaChiTiet, ""); // Clear the error if the code is valid
+            }
+        }
+
+        private void txtMaChiTiet_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtMaChiTiet.Text))
+            {
+                errorProvider1.SetError(txtMaChiTiet, "Mã chi tiết không được để trống.");
+            }
+            else if (BUS_DatPhong.Instance.KiemTraMaChiTietTonTai(txtMaChiTiet.Text))
+            {
+                errorProvider1.SetError(txtMaChiTiet, "Mã chi tiết đã tồn tại. Vui lòng nhập mã khác.");
+            }
+            else
+            {
+                errorProvider1.SetError(txtMaChiTiet, ""); // Clear the error if the code is valid
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Bạn có chắc chắn muốn thoát không?", "Xác nhận thoát", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                Application.Exit(); // Thoát ứng dụng
+            }
         }
     }
 
