@@ -203,7 +203,6 @@ namespace QuanLiKhachSan_Nhom5
                     cboPTTT.Text = row.Cells["HinhThucThanhToan"].Value.ToString();
                     txtThanhTien.Text = row.Cells["ThanhTien"].Value.ToString();
                 }
-                //Thannnn
         }
 
         private void label14_Click(object sender, EventArgs e)
