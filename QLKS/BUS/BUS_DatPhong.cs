@@ -221,10 +221,6 @@ namespace BUS
 
             DAO_DatPhong.Instance.Sua(dp);
         }
-        public bool KiemTraMaChiTietTonTai(string maChiTiet)
-        {
-            return DAO_DatPhong.Instance.KiemTraMaChiTietTonTai(maChiTiet);
-        }
 
     }
 
