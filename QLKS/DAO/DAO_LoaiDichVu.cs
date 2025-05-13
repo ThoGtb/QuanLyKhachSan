@@ -26,74 +26,29 @@ namespace DAO
         }
         public DAO_LoaiDichVu() { }
 
-        //public bool ThemLDV(string maLDV, string tenLDV, string maLoaiPhong)
-        //{
-        //    try
-        //    {
-        //        if (db.LoaiDichVus.Any(nv => nv.MaLoaiPhong == maLDV))
-        //        {
-        //            return false;
-        //        }
-
-        //        LoaiDichVu ldv = new LoaiDichVu
-        //        {
-        //            MaLoaiDichVu = maLDV,
-        //            TenLoaiDichVu = tenLDV,
-        //            MaLoaiPhong = maLoaiPhong
-        //        };
-
-        //        db.LoaiDichVus.InsertOnSubmit(ldv);
-        //        db.SubmitChanges();
-
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-        public void ThemLDV(TextBox maLDV, TextBox tenLDV, TextBox maLoaiPhong)
+        public void ThemLDV(LoaiDichVu ldv)
         {
             try
             {
+                if (CheckMaExists(ldv.MaLoaiDichVu))
+                {
+                    MessageBox.Show("Mã khách hàng đã tồn tại. Vui lòng nhập mã khác.");
+                    return;
+                }
+
                 using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
                 {
-                    LoaiDichVu dp = new LoaiDichVu();
-                    dp.MaLoaiDichVu = maLDV.Text;
-                    dp.TenLoaiDichVu = tenLDV.Text;
-                    dp.MaLoaiPhong = maLoaiPhong.Text;
-
-                    db.LoaiDichVus.InsertOnSubmit(dp);
+                    db.LoaiDichVus.InsertOnSubmit(ldv);
                     db.SubmitChanges();
                     MessageBox.Show("Thêm thành công");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show("Thêm vào bị lỗi " + ex);
+                MessageBox.Show("Thêm vào bị lỗi ");
             }
         }
-        //public bool XoaLoaiDichVu(string maLDV)
-        //{
-        //    try
-        //    {
-        //        LoaiDichVu ldv = db.LoaiDichVus.FirstOrDefault(dv => dv.MaLoaiDichVu == maLDV);
-        //        if (ldv != null)
-        //        {
-        //            db.LoaiDichVus.DeleteOnSubmit(ldv);
-        //            db.SubmitChanges();
-        //            return true;
-        //        }
-        //        else
-        //        {
-        //            return false;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
+
         public void XoaLoaiDichVu(string maLDV)
         {
             using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
@@ -107,42 +62,23 @@ namespace DAO
                 }
             }
         }
-        public bool SuaLoaiDichVu(LoaiDichVu maLDV)
-        {
-            try
-            {
-                //LoaiDichVu ldv = db.LoaiDichVus.SingleOrDefault(dv => dv.MaLoaiDichVu == maLDV);
-                //if (ldv != null)
-                //{
-                //    ldv.MaLoaiDichVu= maLDV;
-                //    ldv.TenLoaiDichVu = tenLDV;
-                //    ldv.MaLoaiPhong = maLoaiPhong;
 
-                //    db.SubmitChanges();
-                //    return true;
-                //}
-                //else
-                //{
-                //    return false;
-                //}
-                using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
-                {
-                    var maLDVv = db.LoaiDichVus.SingleOrDefault(a => a.MaLoaiDichVu == maLDV.MaLoaiDichVu);
-                    if (maLDVv != null)
-                    {
-                        maLDVv.MaLoaiDichVu = maLDV.MaLoaiDichVu;
-                        maLDVv.TenLoaiDichVu = maLDV.TenLoaiDichVu;
-                        maLDVv.MaLoaiPhong = maLDV.MaLoaiPhong;
-                        db.SubmitChanges();
-                        MessageBox.Show("Sửa thành công");
-                        return true;
-                    }
-                    return false;
-                }
-            }
-            catch (Exception ex)
+        public bool SuaLoaiDichVu(LoaiDichVu ldv)
+        {
+            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
             {
-                throw ex;
+                var maLDV = db.LoaiDichVus.SingleOrDefault(a => a.MaLoaiDichVu == ldv.MaLoaiDichVu);
+                if (maLDV != null)
+                {
+                    maLDV.MaLoaiDichVu = ldv.MaLoaiDichVu;
+                    maLDV.TenLoaiDichVu = ldv.TenLoaiDichVu;
+                    maLDV.MaLoaiPhong = ldv.MaLoaiPhong;
+
+                    db.SubmitChanges();
+                    MessageBox.Show("Sửa thành công");
+                    return true;
+                }
+                return false;
             }
         }
         public List<LoaiDichVu> HienThiDanhSachLoaiDichVu()
@@ -167,6 +103,51 @@ namespace DAO
                 }
             }
             return data;
+        }
+        public bool CheckMaExists(string maLDV)
+        {
+            using (var context = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
+            {
+                return context.LoaiDichVus.Any(a => a.MaLoaiDichVu == maLDV);
+            }
+        }
+        public void LoadComBoBoxLoaiPhong(ComboBox cb)
+        {
+            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
+            {
+                var loaiPhongs = db.LoaiPhongs
+                                    .Select(lp => new { lp.MaLoaiPhong, lp.TenLoaiPhong })
+                                    .ToList();
+
+                cb.DataSource = loaiPhongs;
+                cb.DisplayMember = "TenLoaiPhong";
+                cb.ValueMember = "MaLoaiPhong";
+            }
+        }
+        public void LoadDGVForm(TextBox maLDV, TextBox tenLDV, ComboBox maLP, DataGridView data)
+        {
+            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
+            {
+                if (data.SelectedCells.Count > 0)
+                {
+                    var rowIndex = data.SelectedCells[0].RowIndex;
+                    var row = data.Rows[rowIndex];
+
+                    maLDV.Text = row.Cells[0].Value.ToString().Trim();
+                    string selectedMaLP = row.Cells[2].Value.ToString().Trim();
+                    tenLDV.Text = row.Cells[1].Value.ToString().Trim();
+
+                    foreach (var item in maLP.Items)
+                    {
+                        var loaiDichVu = item as dynamic;
+                        if (loaiDichVu != null && loaiDichVu.MaLoaiPhong == selectedMaLP)
+                        {
+                            maLP.SelectedItem = item;
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 }

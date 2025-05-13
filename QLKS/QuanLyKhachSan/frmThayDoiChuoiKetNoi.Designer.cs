@@ -39,6 +39,7 @@
             // 
             this.txtTenChuoi.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTenChuoi.Location = new System.Drawing.Point(423, 124);
+            this.txtTenChuoi.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtTenChuoi.Name = "txtTenChuoi";
             this.txtTenChuoi.Size = new System.Drawing.Size(244, 30);
             this.txtTenChuoi.TabIndex = 0;
@@ -49,8 +50,9 @@
             this.btnThayDoi.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnThayDoi.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnThayDoi.Location = new System.Drawing.Point(423, 244);
+            this.btnThayDoi.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnThayDoi.Name = "btnThayDoi";
-            this.btnThayDoi.Size = new System.Drawing.Size(106, 41);
+            this.btnThayDoi.Size = new System.Drawing.Size(107, 41);
             this.btnThayDoi.TabIndex = 1;
             this.btnThayDoi.Text = "Thay Đổi";
             this.btnThayDoi.UseVisualStyleBackColor = true;
@@ -70,7 +72,8 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = global::QuanLyKhachSan.Properties.Resources.hotel_overview_16853296561;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 54);
+            this.pictureBox1.Location = new System.Drawing.Point(12, 25);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(295, 342);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -79,15 +82,17 @@
             // 
             // frmThayDoiChuoiKetNoi
             // 
+            this.AcceptButton = this.btnThayDoi;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.CancelButton = this.btnThayDoi;
-            this.ClientSize = new System.Drawing.Size(679, 408);
+            this.ClientSize = new System.Drawing.Size(679, 409);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnThayDoi);
             this.Controls.Add(this.txtTenChuoi);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "frmThayDoiChuoiKetNoi";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmThayDoiChuoiKetNoi";

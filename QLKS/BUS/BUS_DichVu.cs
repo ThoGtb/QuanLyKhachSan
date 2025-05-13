@@ -11,6 +11,7 @@ namespace BUS
     public class BUS_DichVu
     {
         public static BUS_DichVu instance;
+        DAO_DichVu DAO_DichVu = new DAO_DichVu();
         public static BUS_DichVu Instance
         {
             get
@@ -25,9 +26,17 @@ namespace BUS
         public BUS_DichVu() { }
 
         private DAO_DichVu dao_dv = new DAO_DichVu();
+
         public void ThemDV(TextBox maDV, ComboBox maLDV, TextBox tenDV, TextBox gia)
         {
-            DAO_DichVu.Instance.Them(maDV, maLDV, tenDV, gia);
+            DichVu dv = new DichVu
+            {
+                MaDichVu = maDV.Text,
+                MaLoaiDichVu = maLDV.SelectedValue.ToString().Trim(),
+                TenDichVu = tenDV.Text,
+                Gia = float.Parse(gia.Text)
+            };
+            DAO_DichVu.Instance.Them(dv);
         }
         public void XoaDV(TextBox maDV)
         {
@@ -38,7 +47,7 @@ namespace BUS
             DichVu dsdv = new DichVu
             {
                 MaDichVu = maDV.Text,
-                MaLoaiDichVu = maLDV.Text,
+                MaLoaiDichVu = maLDV.SelectedValue.ToString().Trim(),
                 TenDichVu = tenDV.Text,
                 Gia = float.Parse(gia.Text),
             };
@@ -69,6 +78,14 @@ namespace BUS
         public void LoadDGVLenForm(TextBox maDV, ComboBox maLDV, TextBox tenDV, TextBox gia, DataGridView data)
         {
             DAO_DichVu.Instance.LoadDGVForm(maDV, maLDV, tenDV, gia, data);
+        }
+        public bool CheckMaDVExists(string maDV)
+        {
+            return DAO_DichVu.Instance.CheckMaExists(maDV);
+        }
+        public double LayGiaDichVu(string maSDDV)
+        {
+            return DAO_DichVu.LayGiaDichVu(maSDDV);
         }
     }
 }

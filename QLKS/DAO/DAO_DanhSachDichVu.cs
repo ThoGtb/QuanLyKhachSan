@@ -10,7 +10,7 @@ namespace DAO
 {
     public class DAO_DanhSachDichVu
     {
-        private static DAO_DanhSachDichVu instance;
+        public static DAO_DanhSachDichVu instance;
         public static DAO_DanhSachDichVu Instance
         {
             get
@@ -22,7 +22,7 @@ namespace DAO
                 return instance;
             }
         }
-        private DAO_DanhSachDichVu() { }
+        public DAO_DanhSachDichVu() { }
 
         public List<DanhSachSuDungDichVu> Xem()
         {
@@ -35,7 +35,8 @@ namespace DAO
                                   dv.MaSuDungDichVu,
                                   dv.MaDichVu,
                                   dv.MaDatPhong,
-                                  dv.SoLuong
+                                  dv.SoLuong,
+                                  dv.Gia
                               }).ToList();
 
                 foreach (var item in dichvu)
@@ -45,7 +46,7 @@ namespace DAO
                     dvu.MaDichVu = item.MaDichVu;
                     dvu.MaDatPhong = item.MaDatPhong;
                     dvu.SoLuong = item.SoLuong;
-
+                    dvu.Gia = item.Gia;
                     data.Add(dvu);
                 }
             }
@@ -79,9 +80,9 @@ namespace DAO
                 var tenDV = from ma in db.DichVus
                             select new
                             {
-                                ma.MaDichVu,ma.TenDichVu
+                                ma.MaDichVu,
+                                ma.TenDichVu
                             };
-                               
 
                 foreach (var item in tenDV)
                 {
@@ -93,7 +94,7 @@ namespace DAO
                 cb.ValueMember = "Key";
             }
         }
-        public void LoadDGVForm(TextBox maSDDichVu, ComboBox maDichVu, ComboBox maDatPhong, TextBox soLuong, DataGridView data)
+        public void LoadDGVForm(TextBox maSDDichVu, ComboBox maDichVu, ComboBox maDatPhong, TextBox soLuong, TextBox gia, DataGridView data)
         {
             using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
             {
@@ -104,22 +105,21 @@ namespace DAO
                 maDichVu.SelectedValue = row.Cells[1].Value != null ? row.Cells[1].Value.ToString().Trim() : null;
                 maDatPhong.SelectedValue = row.Cells[2].Value != null ? row.Cells[2].Value.ToString().Trim() : null;
                 soLuong.Text = row.Cells[3].Value.ToString().Trim();
+                gia.Text = row.Cells[4].Value.ToString().Trim();
             }
         }
         public void Them(DanhSachSuDungDichVu dv)
         {
             try
             {
-                // Kiểm tra mã khách hàng đã tồn tại hay chưa
                 if (CheckMaSDDVExists(dv.MaSuDungDichVu))
                 {
                     MessageBox.Show("Mã su dung vu đã tồn tại. Vui lòng nhập mã khác.");
-                    return; // Không thực hiện thêm nếu mã đã tồn tại
+                    return;
                 }
 
                 using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
                 {
-
                     db.DanhSachSuDungDichVus.InsertOnSubmit(dv);
                     db.SubmitChanges();
                     MessageBox.Show("Thêm thành công");
@@ -127,7 +127,6 @@ namespace DAO
             }
             catch (Exception)
             {
-
                 MessageBox.Show("Thêm vào bị lỗi ");
             }
         }
@@ -156,13 +155,12 @@ namespace DAO
                 var maSDDV = db.DanhSachSuDungDichVus.SingleOrDefault(a => a.MaSuDungDichVu == daDV.MaSuDungDichVu);
                 if (maSDDV != null)
                 {
-                    
                     maSDDV.MaDichVu = daDV.MaDichVu;
                     maSDDV.MaDatPhong = daDV.MaDatPhong;
                     maSDDV.SoLuong = daDV.SoLuong;
-
+                    maSDDV.Gia = daDV.Gia;
                     db.SubmitChanges();
-                  
+
                     return true;
                 }
                 return false;
@@ -170,12 +168,28 @@ namespace DAO
         }
         public bool CheckMaSDDVExists(string maSDDV)
         {
-            using (var context = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString())) // Giả sử đây là context của Entity Framework
+            using (var context = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
             {
-                // Sử dụng LINQ để kiểm tra trùng mã
                 return context.DanhSachSuDungDichVus.Any(dv => dv.MaSuDungDichVu == maSDDV);
             }
         }
+        public List<DanhSachSuDungDichVu> HienThi()
+        {
+            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
+            {
+                return db.DanhSachSuDungDichVus.ToList();
+            }
+        }
+        public double LayGiaDichVu(string maSDDV)
+        {
+            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
+            {
+                var gia = (from ds in db.DanhSachSuDungDichVus
+                           where ds.MaSuDungDichVu == maSDDV
+                           select ds.Gia).FirstOrDefault();
 
+                return gia ?? 0;
+            }
+        }
     }
 }

@@ -10,8 +10,6 @@ namespace DAO
     public class DAO_DSPhong
     {
         public DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString());
-
-
         public List<Phong> Xem()
         {
             List<Phong> data = new List<Phong>();
@@ -39,9 +37,7 @@ namespace DAO
             }
             return data;
         }
-
-
-        public bool themPhong(string maPhong, string maLoaiPhong, int soPhong, string tinhTrang)
+        public bool themPhong(string maPhong, string maLoaiPhong, string soPhong, string tinhTrang)
         {
             using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
             {
@@ -51,7 +47,7 @@ namespace DAO
                     {
                         return false;
                     }
-                    Phong phong = new Phong();
+                    DAO.Phong phong = new DAO.Phong();
                     phong.MaPhong = maPhong;
                     phong.MaLoaiPhong = maLoaiPhong;
                     phong.SoPhong = soPhong;
@@ -72,33 +68,29 @@ namespace DAO
             {
                 try
                 {
-                    Phong phong = db.Phongs.SingleOrDefault(p => p.MaPhong == maPhong);
+                    DAO.Phong phong = db.Phongs.SingleOrDefault(p => p.MaPhong == maPhong);
                     if (phong == null)
                     {
                         return false;
                     }
 
-                    // Xóa phòng khỏi cơ sở dữ liệu
                     db.Phongs.DeleteOnSubmit(phong);
                     db.SubmitChanges();
-
-                    // Trả về true nếu xóa thành công
                     return true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    // Xử lý ngoại lệ nếu có
-                    throw ex;
+                    return false;
                 }
             }
         }
-        public bool suaPhong(string maPhong, string maLoaiPhong, int soPhong, string tinhTrang)
+        public bool suaPhong(string maPhong, string maLoaiPhong, string soPhong, string tinhTrang)
         {
             using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
             {
                 try
                 {
-                    Phong phong = db.Phongs.SingleOrDefault(p => p.MaPhong == maPhong);
+                    DAO.Phong phong = db.Phongs.SingleOrDefault(p => p.MaPhong == maPhong);
                     if (phong != null)
                     {
                         phong.MaLoaiPhong = maLoaiPhong;
@@ -106,7 +98,6 @@ namespace DAO
                         phong.TinhTrang = tinhTrang;
                         db.SubmitChanges();
                         return true;
-
                     }
                     return false;
                 }
@@ -116,8 +107,18 @@ namespace DAO
                 }
             }
         }
+        public double LayGiaTienTheoMaPhong(string maPhong)
+        {
+            using (DBQuanLyKhachSanDataContext db = new DBQuanLyKhachSanDataContext(ThayDoiChuoi.GetConnectionString()))
+            {
+                var giaTien = (from p in db.Phongs
+                               join lp in db.LoaiPhongs on p.MaLoaiPhong equals lp.MaLoaiPhong
+                               where p.MaPhong == maPhong
+                               select lp.Gia)
+                              .FirstOrDefault();
 
-
-
+                return giaTien;
+            }
+        }
     }
 }

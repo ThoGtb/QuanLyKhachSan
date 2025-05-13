@@ -10,15 +10,12 @@ namespace BUS
     public class BUS_DSPhong
     {
         public DAO_DSPhong phongDAO = new DAO_DSPhong();
-        public DAO_LoaiPhong loaiPhongDAO = new DAO_LoaiPhong();
-
-
 
         public List<Phong> Xem()
         {
             return phongDAO.Xem();
         }
-        public bool themPhong(string maPhong, string maLoaiPhong, int soPhong, string tinhTrang)
+        public bool themPhong(string maPhong, string maLoaiPhong, string soPhong, string tinhTrang)
         {
             return phongDAO.themPhong(maPhong, maLoaiPhong, soPhong, tinhTrang);
         }
@@ -26,12 +23,17 @@ namespace BUS
         {
             return phongDAO.xoaPhong(maPhong);
         }
-
-        // Gọi hàm sửa phòng
-        public bool suaPhong(string maPhong, string maLoaiPhong, int soPhong, string tinhTrang)
+        public bool suaPhong(string maPhong, string maLoaiPhong, string soPhong, string tinhTrang)
         {
             return phongDAO.suaPhong(maPhong, maLoaiPhong, soPhong, tinhTrang);
         }
-
+        public double LayGiaTienTheoMaPhong(string maPhong)
+        {
+            if (string.IsNullOrWhiteSpace(maPhong))
+            {
+                throw new ArgumentException("Mã phòng không được để trống.");
+            }
+            return phongDAO.LayGiaTienTheoMaPhong(maPhong);
+        }
     }
 }
